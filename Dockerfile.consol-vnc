@@ -1,0 +1,48 @@
+## Custom Dockerfile
+FROM consol/centos-xfce-vnc:1.4.0
+
+# Running X as root is normally 'a bad thing' but meant to be a 
+# single user system - back to DOS for us!
+USER 0
+
+ADD ./common_env.sh /build/
+
+# The pattern here is that you can add a feature via script and the below 3 lines
+# without inducing the cost of re-running the previous steps. This is meant for 
+# the case where some steps depend on previous (Kafka on Java + Scala) but overall 
+# meant for ease of building on in the future as more things are included. 
+
+ADD ./install_system_services.sh /build/
+RUN bash -c "chmod 755 /build/install_system_services.sh"
+RUN bash -c "/build/install_system_services.sh"
+
+ADD ./install_python_scl.sh /build/
+RUN bash -c "chmod 755 /build/install_python_scl.sh"
+RUN bash -c "/build/install_python_scl.sh"
+
+ADD ./install_go.sh /build/
+RUN bash -c "chmod 755 /build/install_go.sh"
+RUN bash -c "/build/install_go.sh"
+
+ADD ./install_devtools.sh /build/
+RUN bash -c "chmod 755 /build/install_devtools.sh"
+RUN bash -c "/build/install_devtools.sh"
+
+ADD ./install_java_tools.sh /build/
+RUN bash -c "chmod 755 /build/install_java_tools.sh"
+RUN bash -c "/build/install_java_tools.sh"
+
+ADD ./install_kafka.sh /build/
+RUN bash -c "chmod 755 /build/install_kafka.sh"
+RUN bash -c "/build/install_kafka.sh"
+
+ADD ./install_sts.sh /build/
+RUN bash -c "chmod 755 /build/install_sts.sh"
+RUN bash -c "/build/install_sts.sh"
+
+ADD ./customize_vnc.sh /build/
+RUN bash -c "chmod 755 /build/customize_vnc.sh"
+RUN bash -c "/build/customize_vnc.sh"
+
+RUN bash -c "rm -f /headless/.config/bg_sakuli.png"
+ADD ./kafka-logo-tall.png /headless/.config/bg_sakuli.png
