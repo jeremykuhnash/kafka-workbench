@@ -38,3 +38,4 @@ RUN bash -c "chmod 755 /build/install_kafka.sh"
 RUN bash -c "/build/install_kafka.sh"
 
 USER coder
+ENTRYPOINT ["/usr/local/bin/dumb-init", "code-server", "--host", "0.0.0.0", "--auth", "none"]
